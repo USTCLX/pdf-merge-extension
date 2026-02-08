@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node / tooling
+node_modules/
+
+# Build / dist
+dist/
+
+# Temporary
+*.tmp
+*.swp
+

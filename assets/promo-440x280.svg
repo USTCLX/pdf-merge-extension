@@ -1,0 +1,35 @@
+<svg width="440" height="280" viewBox="0 0 440 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PDF / Image Merge promo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f4ed8"/>
+      <stop offset="100%" stop-color="#173a9e"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eaf1ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="440" height="280" rx="28" fill="url(#bg)"/>
+  <rect x="28" y="36" width="200" height="208" rx="16" fill="url(#card)"/>
+  <rect x="60" y="66" width="92" height="128" rx="10" fill="#ffffff"/>
+  <rect x="86" y="82" width="92" height="128" rx="10" fill="#e8f0ff"/>
+  <path d="M112 102h40M112 126h40M112 150h28" stroke="#2b5bd9" stroke-width="6" stroke-linecap="round"/>
+  <path d="M70 206h120" stroke="#1f4ed8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M82 196l-12 10 12 10" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M170 196l12 10-12 10" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g transform="translate(248 58)" fill="#ffffff">
+    <text x="0" y="0" font-family="Avenir Next, Trebuchet MS, Segoe UI, sans-serif" font-size="20" font-weight="700">PDF / Image Merge</text>
+    <text x="0" y="32" font-family="Avenir Next, Trebuchet MS, Segoe UI, sans-serif" font-size="13" opacity="0.9">Merge · Sort · Export PDF</text>
+    <text x="0" y="54" font-family="Avenir Next, Trebuchet MS, Segoe UI, sans-serif" font-size="12" opacity="0.8">Local only · Private</text>
+  </g>
+
+  <g transform="translate(248 140)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="3">
+    <circle cx="10" cy="10" r="6" stroke="none" fill="#ffffff"/>
+    <path d="M22 10h132" opacity="0.9"/>
+    <circle cx="10" cy="34" r="6" stroke="none" fill="#ffffff"/>
+    <path d="M22 34h120" opacity="0.75"/>
+    <circle cx="10" cy="58" r="6" stroke="none" fill="#ffffff"/>
+    <path d="M22 58h96" opacity="0.6"/>
+  </g>
+</svg>

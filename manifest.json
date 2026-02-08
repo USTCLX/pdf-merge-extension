@@ -22,16 +22,5 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage"],
-  "host_permissions": [],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "app.css",
-        "app.js",
-        "vendor/*"
-      ],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  "permissions": []
 }
