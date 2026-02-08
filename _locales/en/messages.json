@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "PDF / Image Merge"
+  },
+  "extDescription": {
+    "message": "Merge PDFs and images, reorder pages, preview and export as PDF. Adjust image scale and alignment. All files stay local for privacy."
+  },
+  "extActionTitle": {
+    "message": "Open PDF merge tool"
+  }
+}

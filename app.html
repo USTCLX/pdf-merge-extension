@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF / 图片拼接预览</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-mark" src="icons/icon-128.png" alt="" aria-hidden="true" />
+        <div>
+          <div class="brand-title" data-i18n="title">PDF / 图片拼接预览</div>
+          <div class="brand-sub" data-i18n="subtitle">本地合并 · PDF/图片 · 导出PDF · 不上传</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <input
+          id="fileInput"
+          type="file"
+          accept="application/pdf,image/png,image/jpeg,image/jpg"
+          multiple
+          hidden
+        />
+        <button id="addBtn" class="btn primary" data-i18n="add">添加文件</button>
+        <button id="exportBtn" class="btn" data-i18n="export" disabled>导出</button>
+        <button id="clearBtn" class="btn ghost" data-i18n="clear" disabled>清空</button>
+        <div class="lang-menu">
+          <button id="langToggle" class="btn ghost icon" aria-haspopup="menu" aria-expanded="false">
+            <svg
+              class="icon-globe"
+              viewBox="0 0 24 24"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-labelledby="languageIconTitle"
+              fill="none"
+            >
+              <title id="languageIconTitle">Language</title>
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"></path>
+              <path d="M2.5 9L21.5 9M2.5 15L21.5 15"></path>
+            </svg>
+          </button>
+          <div id="langDropdown" class="lang-dropdown" role="menu">
+            <button id="langZh" class="lang-item" role="menuitem">中文</button>
+            <button id="langEn" class="lang-item" role="menuitem">English</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout" id="layout">
+      <section class="panel left" id="leftPanel">
+        <div class="panel-header">
+          <div class="panel-title" data-i18n="pages">页面</div>
+          <div class="panel-meta">
+            <span id="pageCount">0</span>
+            <span data-i18n="pageUnit">页</span>
+          </div>
+        </div>
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-title" data-i18n="dropTitle">拖拽或点击添加 PDF / 图片</div>
+          <div class="drop-sub" data-i18n="dropSub">页面级排序与删除</div>
+        </div>
+        <div id="pageList" class="page-list" aria-live="polite"></div>
+      </section>
+
+      <div id="splitter" class="splitter" role="separator" aria-orientation="vertical" aria-label="Resize panels"></div>
+      <section class="panel right" id="rightPanel">
+        <div class="panel-header">
+          <div class="panel-title" data-i18n="preview">预览</div>
+          <div class="panel-meta" id="previewMeta"></div>
+        </div>
+        <div id="previewArea" class="preview-area">
+          <div class="empty-preview" data-i18n="emptyPreview">添加 PDF 或图片后会自动生成长列表预览</div>
+        </div>
+        <div id="imageTools" class="image-tools" aria-hidden="true">
+          <div class="tools-title" data-i18n="imageToolsTitle">图片调整</div>
+          <div class="tools-row">
+            <label class="tools-label" data-i18n="scale">缩放</label>
+            <input id="scaleRange" class="tools-range" type="range" min="0.2" max="3" step="0.01" />
+            <span id="scaleValue" class="tools-value">100%</span>
+          </div>
+          <div class="tools-row">
+            <label class="tools-label" data-i18n="align">对齐</label>
+            <div class="tools-group">
+              <button class="icon-btn" data-align="left" data-i18n="alignLeft">左</button>
+              <button class="icon-btn" data-align="center" data-i18n="alignCenter">中</button>
+              <button class="icon-btn" data-align="right" data-i18n="alignRight">右</button>
+              <button class="icon-btn" data-align="top" data-i18n="alignTop">上</button>
+              <button class="icon-btn" data-align="middle" data-i18n="alignMiddle">中</button>
+              <button class="icon-btn" data-align="bottom" data-i18n="alignBottom">下</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="vendor/pdf-lib.min.js"></script>
+    <script src="vendor/pdf.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
