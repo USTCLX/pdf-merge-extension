@@ -106,6 +106,8 @@
 
   const IMAGE_PAGE = { width: 595, height: 842 };
 
+  const getImageScale = (page) => page.baseScale * page.userScale;
+
   const applyI18n = () => {
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
@@ -163,6 +165,11 @@
     card.className = "page-card";
     card.draggable = true;
     card.dataset.pageId = String(page.id);
+    card.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target.closest(".icon-btn")) return;
+      scrollToPreview(page.id);
+    });
 
     const thumb = document.createElement("canvas");
     thumb.className = "thumb";
@@ -316,8 +323,9 @@
         const ctx = canvas.getContext("2d", { alpha: false });
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const drawWidth = bitmap.width * page.imageScale * scale;
-        const drawHeight = bitmap.height * page.imageScale * scale;
+        const actualScale = getImageScale(page);
+        const drawWidth = bitmap.width * actualScale * scale;
+        const drawHeight = bitmap.height * actualScale * scale;
         const drawX = page.imageOffsetX * scale;
         const drawY = page.imageOffsetY * scale;
         ctx.drawImage(bitmap, drawX, drawY, drawWidth, drawHeight);
@@ -356,8 +364,9 @@
         const ctx = canvas.getContext("2d", { alpha: false });
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const drawWidth = bitmap.width * page.imageScale * scale;
-        const drawHeight = bitmap.height * page.imageScale * scale;
+        const actualScale = getImageScale(page);
+        const drawWidth = bitmap.width * actualScale * scale;
+        const drawHeight = bitmap.height * actualScale * scale;
         const drawX = page.imageOffsetX * scale;
         const drawY = page.imageOffsetY * scale;
         ctx.drawImage(bitmap, drawX, drawY, drawWidth, drawHeight);
@@ -398,6 +407,13 @@
     state.pages.forEach((page) => {
       if (page.previewEl) state.observer.observe(page.previewEl);
     });
+  };
+
+  const scrollToPreview = (pageId) => {
+    const item = previewArea.querySelector(`[data-page-id="${pageId}"]`);
+    if (!item) return;
+    const top = item.offsetTop;
+    previewArea.scrollTo({ top, behavior: "smooth" });
   };
 
   const addFiles = async (files) => {
@@ -482,7 +498,8 @@
             imageBytes: bytes,
             imageType: file.type,
             imageBitmap: bitmap,
-            imageScale: 1,
+            baseScale: 1,
+            userScale: 1,
             imageOffsetX: 0,
             imageOffsetY: 0,
             previewScale: 1.2,
@@ -493,9 +510,11 @@
             page.pageWidth / bitmap.width,
             page.pageHeight / bitmap.height
           );
-          page.imageScale = fitScale;
-          page.imageOffsetX = (page.pageWidth - bitmap.width * fitScale) / 2;
-          page.imageOffsetY = (page.pageHeight - bitmap.height * fitScale) / 2;
+          page.baseScale = fitScale;
+          page.userScale = 1;
+          const actualScale = getImageScale(page);
+          page.imageOffsetX = (page.pageWidth - bitmap.width * actualScale) / 2;
+          page.imageOffsetY = (page.pageHeight - bitmap.height * actualScale) / 2;
           state.sources.push({
             name: file.name,
             arrayBuffer,
@@ -555,8 +574,9 @@
           }
           const pageWidth = page.pageWidth;
           const pageHeight = page.pageHeight;
-          const drawWidth = page.imageBitmap.width * page.imageScale;
-          const drawHeight = page.imageBitmap.height * page.imageScale;
+          const actualScale = getImageScale(page);
+          const drawWidth = page.imageBitmap.width * actualScale;
+          const drawHeight = page.imageBitmap.height * actualScale;
           const drawX = page.imageOffsetX;
           const drawY = pageHeight - page.imageOffsetY - drawHeight;
           const pdfPage = merged.addPage([pageWidth, pageHeight]);
@@ -638,13 +658,14 @@
     }
     imageTools.classList.add("active");
     imageTools.setAttribute("aria-hidden", "false");
-    scaleRange.value = page.imageScale.toFixed(2);
-    scaleValue.textContent = `${Math.round(page.imageScale * 100)}%`;
+    scaleRange.value = page.userScale.toFixed(2);
+    scaleValue.textContent = `${Math.round(page.userScale * 100)}%`;
   };
 
   const clampImageOffset = (page) => {
-    const imgW = page.imageBitmap.width * page.imageScale;
-    const imgH = page.imageBitmap.height * page.imageScale;
+    const actualScale = getImageScale(page);
+    const imgW = page.imageBitmap.width * actualScale;
+    const imgH = page.imageBitmap.height * actualScale;
     const maxX = Math.max(0, page.pageWidth - imgW);
     const maxY = Math.max(0, page.pageHeight - imgH);
     page.imageOffsetX = Math.min(Math.max(page.imageOffsetX, 0), maxX);
@@ -652,8 +673,9 @@
   };
 
   const alignImage = (page, dir) => {
-    const imgW = page.imageBitmap.width * page.imageScale;
-    const imgH = page.imageBitmap.height * page.imageScale;
+    const actualScale = getImageScale(page);
+    const imgW = page.imageBitmap.width * actualScale;
+    const imgH = page.imageBitmap.height * actualScale;
     if (dir === "left") page.imageOffsetX = 0;
     if (dir === "center") page.imageOffsetX = (page.pageWidth - imgW) / 2;
     if (dir === "right") page.imageOffsetX = page.pageWidth - imgW;
@@ -686,20 +708,21 @@
     scaleRange.addEventListener("input", () => {
       const page = state.pages.find((p) => p.id === state.activeImagePageId);
       if (!page) return;
-      const prevScale = page.imageScale;
-      const nextScale = Number(scaleRange.value);
-      const centerX = page.imageOffsetX + (page.imageBitmap.width * prevScale) / 2;
-      const centerY = page.imageOffsetY + (page.imageBitmap.height * prevScale) / 2;
-      page.imageScale = nextScale;
-      page.imageOffsetX = centerX - (page.imageBitmap.width * nextScale) / 2;
-      page.imageOffsetY = centerY - (page.imageBitmap.height * nextScale) / 2;
+      const prevActual = getImageScale(page);
+      const nextUser = Number(scaleRange.value);
+      const centerX = page.imageOffsetX + (page.imageBitmap.width * prevActual) / 2;
+      const centerY = page.imageOffsetY + (page.imageBitmap.height * prevActual) / 2;
+      page.userScale = nextUser;
+      const nextActual = getImageScale(page);
+      page.imageOffsetX = centerX - (page.imageBitmap.width * nextActual) / 2;
+      page.imageOffsetY = centerY - (page.imageBitmap.height * nextActual) / 2;
       clampImageOffset(page);
       page.rendered = false;
       page.rendering = null;
       page.thumbRendered = false;
       renderPage(page);
       renderThumbnail(page);
-      scaleValue.textContent = `${Math.round(page.imageScale * 100)}%`;
+      scaleValue.textContent = `${Math.round(page.userScale * 100)}%`;
     });
 
     imageTools.querySelectorAll("[data-align]").forEach((btn) => {
