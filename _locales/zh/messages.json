@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "PDF / 图片拼接预览"
+    "message": "PDF 合并 - 支持合并&按页重排&添加图片"
   },
   "extDescription": {
     "message": "合并 PDF 与图片，页面级排序、预览与导出。全程本地处理，不上传，隐私安全。"
